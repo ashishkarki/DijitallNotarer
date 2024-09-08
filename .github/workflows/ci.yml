@@ -1,0 +1,30 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js (v20.x matching the code's)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.17.0'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: yarn install
+
+      # Step 4: Run tests (if tests are configured)
+      - name: Run tests
+        run: yarn test

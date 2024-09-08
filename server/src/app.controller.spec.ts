@@ -16,7 +16,7 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+      expect(appController.getHello()).toBe('Hello, you have reached the API for "DijitallNotarer" - the Digital Notarization Platform!!');
     });
   });
 });
