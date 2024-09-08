@@ -19,12 +19,24 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.17.0'
+          node-version: '20'
 
       # Step 3: Install dependencies
       - name: Install dependencies
         run: yarn install
 
       # Step 4: Run tests (if tests are configured)
-      - name: Run tests
+      # First, in the server folder
+      - name: Run server tests
+        working-directory: ./server
         run: yarn test
+
+      # Then, in the client folder
+      - name: Run client tests
+        working-directory: ./client
+        run: yarn test
+        continue-on-error: true # don't mind if there are no tests in client folder
+
+      # or, we can use yarn to run test in whole workspace
+#      - name: Run tests in all workspaces
+#        run: yarn workspaces run test
