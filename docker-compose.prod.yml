@@ -1,0 +1,33 @@
+services:
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    ports:
+      - "4566:4566" # localstack AWS services port
+      - "4571:4571" # optional: old lambda port
+    environment:
+      - SERVICES=s3,dynamodb,lambda # the services we need from localstack
+      - DEBUG=1 # enable debug logs
+    networks:
+      - notary-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    container_name: server
+    ports:
+      # map the nestjs app running in SERVER_PORT number to host machine's
+      # SERVER_PORT port as well. SERVER_PORT value is read from .env file by dc
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      - localstack
+    environment:
+      - PORT=${SERVER_PORT} # pass the value of SERVER_PORT to the nestjs server
+      - AWS_ENDPOINT=${AWS_ENDPOINT}  # Use AWS_ENDPOINT from the .env file
+    networks:
+      - notary-network
+
+networks:
+  notary-network:
+    driver: bridge

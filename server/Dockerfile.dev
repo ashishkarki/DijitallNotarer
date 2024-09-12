@@ -1,0 +1,26 @@
+# use node.js base image
+FROM node:20-alpine
+
+# set the working directory inside the container
+WORKDIR /usr/src/app
+
+# install nestjs CLI globally
+RUN yarn global add @nestjs/cli
+
+# copy package.json, and yarn/package lock files to install dependencies
+COPY package*.json ./
+
+# install dev dependencies
+RUN yarn install
+
+# Copy the entire server folder into the container
+COPY . .
+
+# expose the application port
+# default port which can be overwritten by compose
+ENV PORT=8082
+# listen on $PORT after running the nestjs server
+EXPOSE $PORT
+
+# Command to run the NestJS server
+CMD ["yarn", "start:dev"]

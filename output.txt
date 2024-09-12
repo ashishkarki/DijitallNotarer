@@ -1,0 +1,64 @@
+localstack  | LocalStack supervisor: starting
+localstack  | LocalStack supervisor: localstack process (PID 15) starting
+localstack  | 2024-09-12T12:32:15.858 DEBUG --- [  MainThread] l.utils.docker_utils       : Using SdkDockerClient. LEGACY_DOCKER_CLIENT: False, SDK installed: True
+localstack  | 2024-09-12T12:32:16.096  WARN --- [  MainThread] l.services.internal        : Enabling diagnose endpoint, please be aware that this can expose sensitive information via your network.
+localstack  | 2024-09-12T12:32:16.101 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.runtime.components.aws = <class 'localstack.aws.components.AwsComponents'>)
+localstack  | 2024-09-12T12:32:16.101 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.runtime.components:aws
+localstack  | 
+localstack  | LocalStack version: 3.7.3.dev15
+localstack  | LocalStack build date: 2024-09-12
+localstack  | LocalStack build git hash: 68366d1b6
+localstack  | 
+localstack  | 2024-09-12T12:32:16.101 DEBUG --- [  MainThread] localstack.utils.run       : Executing command: rm -rf "/tmp/localstack"
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start._patch_botocore_endpoint_in_memory = <function _patch_botocore_endpoint_in_memory at 0xffff7e0cf880>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : plugin localstack.hooks.on_infra_start:_patch_botocore_endpoint_in_memory is disabled, reason: Load condition for plugin was false
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start._patch_botocore_json_parser = <function _patch_botocore_json_parser at 0xffff7e0cf4c0>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:_patch_botocore_json_parser
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start._patch_cbor2 = <function _patch_cbor2 at 0xffff7e0cf600>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:_patch_cbor2
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start._publish_config_as_analytics_event = <function _publish_config_as_analytics_event at 0xffff7cfde200>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:_publish_config_as_analytics_event
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start._publish_container_info = <function _publish_container_info at 0xffff7cfde5c0>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:_publish_container_info
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start._run_init_scripts_on_start = <function _run_init_scripts_on_start at 0xffff7cf77740>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:_run_init_scripts_on_start
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.apply_aws_runtime_patches = <function apply_aws_runtime_patches at 0xffff7cfde8e0>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:apply_aws_runtime_patches
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.apply_runtime_patches = <function apply_runtime_patches at 0xffff7cfdeca0>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:apply_runtime_patches
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.conditionally_enable_debugger = <function conditionally_enable_debugger at 0xffff7cfdf100>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:conditionally_enable_debugger
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.delete_cached_certificate = <function delete_cached_certificate at 0xffff7cfdf420>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : plugin localstack.hooks.on_infra_start:delete_cached_certificate is disabled, reason: Load condition for plugin was false
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.deprecation_warnings = <function deprecation_warnings at 0xffff7cfdf240>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:deprecation_warnings
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.register_cloudformation_deploy_ui = <function register_cloudformation_deploy_ui at 0xffff7cfdf6a0>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:register_cloudformation_deploy_ui
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.register_custom_endpoints = <function register_custom_endpoints at 0xffff7ce567a0>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:register_custom_endpoints
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.setup_dns_configuration_on_host = <function setup_dns_configuration_on_host at 0xffff7ce56c00>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:setup_dns_configuration_on_host
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.start_dns_server = <function start_dns_server at 0xffff7ce56ac0>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:start_dns_server
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_start.validate_configuration = <function validate_configuration at 0xffff7ce56660>)
+localstack  | 2024-09-12T12:32:16.114 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_start:validate_configuration
+localstack  | 2024-09-12T12:32:16.214 DEBUG --- [  MainThread] localstack.dns.server      : Determined fallback dns: 127.0.0.11
+localstack  | 2024-09-12T12:32:16.214 DEBUG --- [  MainThread] localstack.dns.server      : Starting DNS servers (tcp/udp port 53 on 0.0.0.0)...
+localstack  | 2024-09-12T12:32:16.214 DEBUG --- [  MainThread] localstack.dns.server      : Adding host .*localhost.localstack.cloud pointing to LocalStack
+localstack  | 2024-09-12T12:32:16.214 DEBUG --- [  MainThread] localstack.dns.server      : Adding host .*localhost.localstack.cloud with record DynamicRecord(record_type=<RecordType.A: 1>, record_id=None)
+localstack  | 2024-09-12T12:32:16.214 DEBUG --- [  MainThread] localstack.dns.server      : Adding host .*localhost.localstack.cloud with record DynamicRecord(record_type=<RecordType.AAAA: 2>, record_id=None)
+localstack  | 2024-09-12T12:32:16.216 DEBUG --- [-functhread1] localstack.dns.server      : DNS Server started
+localstack  | 2024-09-12T12:32:16.217 DEBUG --- [  MainThread] localstack.dns.server      : DNS server startup finished.
+localstack  | 2024-09-12T12:32:16.218 DEBUG --- [  MainThread] localstack.runtime.init    : Init scripts discovered: {BOOT: [], START: [], READY: [], SHUTDOWN: []}
+localstack  | 2024-09-12T12:32:16.218 DEBUG --- [  MainThread] localstack.plugins         : Checking for the usage of deprecated community features and configs...
+localstack  | 2024-09-12T12:32:16.221 DEBUG --- [  MainThread] localstack.dns.server      : Overwriting container DNS server to point to localhost
+localstack  | 2024-09-12T12:32:16.221 DEBUG --- [  MainThread] localstack.utils.ssl       : Attempting to download local SSL certificate file
+localstack  | 2024-09-12T12:32:16.665 DEBUG --- [  MainThread] localstack.utils.ssl       : SSL certificate downloaded successfully
+localstack  | 2024-09-12T12:32:16.665 DEBUG --- [  MainThread] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.runtime.server.twisted = <class 'localstack.runtime.server.plugins.TwistedRuntimeServerPlugin'>)
+localstack  | 2024-09-12T12:32:16.665 DEBUG --- [  MainThread] plux.runtime.manager       : loading plugin localstack.runtime.server:twisted
+localstack  | 2024-09-12T12:32:16.747 DEBUG --- [ady_monitor)] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_ready._run_init_scripts_on_ready = <function _run_init_scripts_on_ready at 0xffff7cf77880>)
+localstack  | 2024-09-12T12:32:16.747 DEBUG --- [ady_monitor)] plux.runtime.manager       : loading plugin localstack.hooks.on_infra_ready:_run_init_scripts_on_ready
+localstack  | 2024-09-12T12:32:16.747 DEBUG --- [ady_monitor)] plux.runtime.manager       : instantiating plugin PluginSpec(localstack.hooks.on_infra_ready.register_virtual_host_routes = <function register_virtual_host_routes at 0xffff78b76de0>)
+localstack  | 2024-09-12T12:32:16.747 DEBUG --- [ady_monitor)] plux.runtime.manager       : plugin localstack.hooks.on_infra_ready:register_virtual_host_routes is disabled, reason: Load condition for plugin was false
+localstack  | Ready.
+localstack  | 2024-09-12T12:32:20.756 DEBUG --- [et.reactor-0] l.a.p.service_router       : building service catalog index cache file /var/lib/localstack/cache/service-catalog-3_7_3_dev15-1_35_14.pickle

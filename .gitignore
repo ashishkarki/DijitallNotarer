@@ -3,7 +3,7 @@ node_modules/
 dist/
 coverage/
 .env
-.env.local
+.env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -37,6 +37,15 @@ out/
 
 # IDEs
 .idea/
+
+# Ignore all .env files
+.env
+
+# Ignore any other .env files in subdirectories
+**/.env
+
+# Do not ignore .env.example
+!.env.example
 
 # Other
 *.swp

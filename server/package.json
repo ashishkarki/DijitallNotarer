@@ -27,9 +27,11 @@
     "@nestjs/graphql": "^12.2.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.4.0",
+    "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "shared": "*",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
