@@ -1,0 +1,14 @@
+schema: http://localhost:8082/graphql # my graphql endpoint
+documents: './src/**/*.graphql' # where are my graphql queries
+generates: 
+#  ./src/generated/graphql.tsx:
+  ./src/:
+    preset: near-operation-file
+    presetConfig: 
+      extension: .generated.ts # generated files will hve this extension
+      baseTypesPath: types.ts # optional - point to shared types
+    plugins:
+      - typescript
+      - typescript-operations
+          
+  

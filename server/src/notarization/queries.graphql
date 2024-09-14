@@ -1,0 +1,9 @@
+# Query for sayHello
+query SayHello {
+    sayHello
+}
+
+# Mutation for uploadDocument
+mutation UploadDocument {
+    uploadDocument
+}
