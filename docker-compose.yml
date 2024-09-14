@@ -28,10 +28,25 @@ services:
       - ./server:/usr/src/app # mount the local server folder to the container
       - /usr/src/app/node_modules # prevent overwriting node_mods inside the container
       # Mount the shared/dist folder to node_modules/shared
-#      - ./shared/dist:/usr/src/app/node_modules/shared
+    #      - ./shared/dist:/usr/src/app/node_modules/shared
     environment:
       - PORT=${SERVER_PORT} # pass the value of SERVER_PORT to the nestjs server
       - AWS_ENDPOINT=${AWS_ENDPOINT}  # Use AWS_ENDPOINT from the .env file
+    networks:
+      - notary-network
+  
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: client
+    ports:
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules # prevent overwriting node_mods inside the container
+    environment:
+      - PORT=${CLIENT_PORT} # pass the CLIENT_PORT value read from .env file to the client's Dockerfile
     networks:
       - notary-network
 
