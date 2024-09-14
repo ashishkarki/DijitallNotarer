@@ -24,7 +24,9 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
     depends_on:
       - localstack
-#    volumes:
+    volumes:
+      - ./server:/usr/src/app # mount the local server folder to the container
+      - /usr/src/app/node_modules # prevent overwriting node_mods inside the container
       # Mount the shared/dist folder to node_modules/shared
 #      - ./shared/dist:/usr/src/app/node_modules/shared
     environment:

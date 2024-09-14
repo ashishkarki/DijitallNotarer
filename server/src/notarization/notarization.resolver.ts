@@ -9,7 +9,7 @@ export class NotarizationResolver {
     // define a sayHello query to avoid any schema generation error
     @Query(() => String)
     sayHello(): string {
-        return "hello, from the GraphQL Server of DijitallNotarer!!";
+        return "Hello, from the GraphQL Server of DijitallNotarer!!";
     }
 
     @Mutation(() => Boolean)
