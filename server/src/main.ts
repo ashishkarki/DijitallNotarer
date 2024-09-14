@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { config } from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { Logger } from '@nestjs/common';
 
 // load env variables for given environment
 const envFile = process.env.NODE_ENV
@@ -17,6 +18,9 @@ if (fs.existsSync(envFile)) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  // Setup a global nestjs logger
+  const logger = new Logger('Bootstrap'); // the logger for/at root level
 
   // Swagger configuration
   const config = new DocumentBuilder()
@@ -29,6 +33,9 @@ async function bootstrap() {
 
   const SERVER_PORT = process.env.SERVER_PORT || 8082;
   await app.listen(SERVER_PORT);
+
+  // Log when the server starts
+  logger.log(`Application is running on: http://localhost:${SERVER_PORT}`);
 }
 
 bootstrap();
