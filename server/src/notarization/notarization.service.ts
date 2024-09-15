@@ -3,6 +3,7 @@ import { S3Client, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/clie
 import { DynamoDBClient, PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as process from 'node:process';
 
 @Injectable()
 export class NotarizationService {
@@ -11,17 +12,22 @@ export class NotarizationService {
   private readonly bucketName = 'notary-bucket';
   private readonly logger = new Logger(NotarizationService.name);
 
+  private readonly awsConfiguration = {
+    region: process.env.AWS_REGION || 'us-east-1',
+    endpoint: process.env.AWS_ENDPOINT || 'http://localhost:4566',
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'dummy',
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'dummy',
+    },
+  };
+
 
   constructor() {
-    this.s3Client = new S3Client({
-      region: 'us-east-1',
-      endpoint: process.env.AWS_ENDPOINT,
-    });
+    this.s3Client = new S3Client(this.awsConfiguration);
+    this.dynamoDBClient = new DynamoDBClient(this.awsConfiguration);
 
-    this.dynamoDBClient = new DynamoDBClient({
-      region: 'us-east-1',
-      endpoint: process.env.AWS_ENDPOINT,
-    });
+    // Log the AWS configuration details
+    this.logger.log(`AWS Configuration - Region: ${this.awsConfiguration.region}, Endpoint: ${this.awsConfiguration.endpoint}`);
   }
 
   async uploadDocument(filePath: string): Promise<boolean> {
@@ -30,6 +36,8 @@ export class NotarizationService {
       this.logger.error(`File not found: ${filePath}`);
       throw new BadRequestException(`File doesn't exist: ${filePath}`);
     }
+
+    this.logger.log(`NotarizationService, received request to upload document at: ${filePath}`);
 
     // All good, read the file content
     const fileContent = fs.readFileSync(filePath);

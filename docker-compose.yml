@@ -8,8 +8,10 @@ services:
     environment:
       - SERVICES=s3,dynamodb,lambda # the services we need from localstack
       - DEBUG=1 # enable debug logs
+      - DATA_DIR=/var/localstack/data # Make LocalStack persist data
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock  # <-- This mounts the Docker socket
+      - /var/run/docker.sock:/var/run/docker.sock  # This mounts the Docker socket
+      - ./localstack_data:/var/localstack/data # Mount a local directory to persist data
     networks:
       - notary-network
 
@@ -27,11 +29,13 @@ services:
     volumes:
       - ./server:/usr/src/app # mount the local server folder to the container
       - /usr/src/app/node_modules # prevent overwriting node_mods inside the container
-      # Mount the shared/dist folder to node_modules/shared
-    #      - ./shared/dist:/usr/src/app/node_modules/shared
+      - ./shared:/usr/src/app/shared  # Mount shared folder for the server
     environment:
       - PORT=${SERVER_PORT} # pass the value of SERVER_PORT to the nestjs server
       - AWS_ENDPOINT=${AWS_ENDPOINT}  # Use AWS_ENDPOINT from the .env file
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}        # Add AWS Access Key from .env
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} # Add AWS Secret Key from .env
+      - AWS_REGION=${AWS_REGION}                      # Add AWS Region from .env
     networks:
       - notary-network
   
@@ -45,6 +49,7 @@ services:
     volumes:
       - ./client:/usr/src/app
       - /usr/src/app/node_modules # prevent overwriting node_mods inside the container
+      - ./shared:/usr/src/app/shared  # Mount shared folder (same as above) for the client too
     environment:
       - PORT=${CLIENT_PORT} # pass the CLIENT_PORT value read from .env file to the client's Dockerfile
     networks:
