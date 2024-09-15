@@ -14,7 +14,7 @@ export class NotarizationService {
 
   private readonly awsConfiguration = {
     region: process.env.AWS_REGION || 'us-east-1',
-    endpoint: process.env.AWS_ENDPOINT || 'http://localhost:4566',
+    endpoint: process.env.AWS_ENDPOINT || 'http://localstack:4566',
     credentials: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'dummy',
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'dummy',
@@ -23,7 +23,14 @@ export class NotarizationService {
 
 
   constructor() {
-    this.s3Client = new S3Client(this.awsConfiguration);
+    /**
+     * forcePathStyle: true means use path-style access for buckets instead of the virtual-hosted style
+     * Path-style URL format: http://localhost:4566/notary-bucket/...
+     * Virtual-hosted style: http://notary-bucket.localhost:4566/... which causes 
+     *                       DNS resolution errors in LocalStack 
+     */
+    this.s3Client = new S3Client({...this.awsConfiguration, forcePathStyle: true});
+    
     this.dynamoDBClient = new DynamoDBClient(this.awsConfiguration);
 
     // Log the AWS configuration details
