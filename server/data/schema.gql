@@ -2,10 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type OperationResult {
+  status: Boolean!
+  message: String!
+}
+
 type Query {
   sayHello: String!
 }
 
 type Mutation {
-  uploadDocument(filePath: String!): Boolean!
+  uploadDocument(filePath: String!): OperationResult!
 }

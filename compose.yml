@@ -17,7 +17,7 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile.dev
+      dockerfile: server/Dockerfile.dev
     container_name: server
     ports:
       # map the nestjs app running in SERVER_PORT number to host machine's
@@ -31,7 +31,11 @@ services:
       - ./shared:/usr/src/app/shared  # Mount shared folder for the server
     environment:
       - PORT=${SERVER_PORT} # pass the value of SERVER_PORT to the nestjs server
-      - AWS_ENDPOINT=${AWS_ENDPOINT}  # Use AWS_ENDPOINT from the .env file
+      - AWS_ENDPOINT=http://minio:9000 # Point to MinIO within the Docker network
+      - MINIO_ACCESS_KEY=minioadmin     # MinIO credentials
+      - MINIO_SECRET_KEY=minioadmin987     # MinIO credentials
+    depends_on:
+      - minio # this ensures minIO starts before this server service
     networks:
       - notary-network
   
@@ -47,7 +51,7 @@ services:
       - /usr/src/app/node_modules # prevent overwriting node_mods inside the container
       - ./shared:/usr/src/app/shared  # Mount shared folder (same as above) for the client too
     environment:
-      - PORT=${CLIENT_PORT} # pass the CLIENT_PORT value read from .env file to the client's Dockerfile
+      - PORT=${CLIENT_PORT} # pass the CLIENT_PORT value read from .env file to the client's Dockerfile.dev
     networks:
       - notary-network
 

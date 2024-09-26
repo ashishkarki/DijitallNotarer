@@ -1,86 +1,88 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { S3Client, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
-import { DynamoDBClient, PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
+import {
+  S3Client,
+  PutObjectCommand,
+  HeadBucketCommand,
+  CreateBucketCommand,
+  PutObjectCommandInput,
+} from '@aws-sdk/client-s3';
 import * as fs from 'fs';
-import * as path from 'path';
+import * as path from 'node:path';
+import { OperationResult } from '../models/operation-result.dto';
 
 @Injectable()
 export class NotarizationService {
   private readonly s3Client: S3Client;
-  private readonly dynamoDBClient: DynamoDBClient;
   private readonly bucketName = 'notary-bucket';
   private readonly logger = new Logger(NotarizationService.name);
 
   private readonly awsConfiguration = {
-    region: process.env.AWS_REGION || 'us-east-1',
-    endpoint: process.env.AWS_ENDPOINT || 'http://localstack:4566',
+    region: process.env.AWS_REGION || 'us-east-1', // Set any region (MinIO doesn't care about the region)
+    endpoint: process.env.AWS_ENDPOINT || 'http://minio:9000', // MinIO endpoint
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'test',
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'test',
+      accessKeyId: process.env.MINIO_ACCESS_KEY,
+      secretAccessKey: process.env.MINIO_SECRET_KEY,
     },
   };
 
   constructor() {
-    // AWS SDK S3 and DynamoDB setup
+    // Initialize the S3 client with MinIO credentials and endpoint
     this.s3Client = new S3Client({ ...this.awsConfiguration, forcePathStyle: true });
-    this.dynamoDBClient = new DynamoDBClient(this.awsConfiguration);
-
-    this.logger.log(`AWS Configuration - Region: ${this.awsConfiguration.region}, Endpoint: ${this.awsConfiguration.endpoint}`);
+    this.logger.log('S3Client initialized with MinIO configuration');
   }
 
-  async uploadDocument(filePath: string): Promise<boolean> {
+  async uploadDocument(filePath: string): Promise<OperationResult> {
     // Resolve the full path of the file
     const absoluteFilePath = path.resolve(filePath);
 
-    // Check if the file exists in the given path
+    // // Step 1: Check if the file exists
     if (!fs.existsSync(absoluteFilePath)) {
-      this.logger.error(`File not found: ${absoluteFilePath}`);
-      throw new BadRequestException(`File doesn't exist: ${absoluteFilePath}`);
+      const message = `File doesn't exist: ${absoluteFilePath}`;
+      this.logger.error(message);
+      
+      return new OperationResult(false, message);
     }
 
     this.logger.log(`NotarizationService, received request to upload document at: ${absoluteFilePath}`);
 
-    // Read the file content
-    const fileContent = fs.readFileSync(absoluteFilePath);
-    const fileName = path.basename(absoluteFilePath); // Extract the filename from the path
-
-    // Prepare S3 upload parameters
-    const uploadParams: PutObjectCommandInput = {
+    const fileStream = fs.createReadStream(absoluteFilePath); // Use the absolute file path for streaming
+    const params = {
       Bucket: this.bucketName,
-      Key: fileName,
-      Body: fileContent,
-      ContentType: 'application/pdf',
+      Key: path.basename(absoluteFilePath), // Use the file name as the S3 key
+      Body: fileStream,
     };
 
+    // Step 2: Check if the bucket exists
     try {
-      // Upload file to S3
-      await this.s3Client.send(new PutObjectCommand(uploadParams));
-      this.logger.log(`File ${fileName} uploaded successfully to S3`);
-    } catch (s3Error: any) {
-      this.logger.error(`Error while uploading document to S3: ${fileName}`, s3Error.stack);
-      return false;
+      this.logger.log(`Checking if bucket "${this.bucketName}" exists...`);
+      const bucketExists = await this.s3Client
+        .send(new HeadBucketCommand({ Bucket: params.Bucket }))
+        .catch(() => false);
+      if (!bucketExists) {
+        this.logger.warn(`Bucket "${this.bucketName}" not found. Creating it...`);
+        await this.s3Client.send(new CreateBucketCommand({ Bucket: params.Bucket }));
+        this.logger.log(`Bucket "${this.bucketName}" created successfully.`);
+      }
+    } catch (error: any) {
+      const errorMessage = `Error creating or checking bucket: ${error.message}`;
+      this.logger.error(errorMessage, error.stack);
+      
+      return new OperationResult(false, errorMessage);  // Return failure result
     }
 
-    // now try storing the metadata in dynamoDB
+    // Step 3: Upload the file
     try {
-      // Store metadata in DynamoDB
-      const timestamp = new Date().toISOString();
-      const metadata: PutItemCommandInput = {
-        TableName: 'notary-metadata',
-        Item: {
-          DocumentID: { S: fileName },
-          UploadedAt: { S: timestamp },
-          Status: { S: 'Pending' },
-        },
-      };
-
-      await this.dynamoDBClient.send(new PutItemCommand(metadata));
-      this.logger.log(`Metadata for ${fileName} saved in DynamoDB.`);
-    } catch (dynamoError: any) {
-      this.logger.error(`Error while saving metadata to DynamoDB: ${fileName}`, dynamoError.stack);
-      return false;
+      this.logger.log(`Uploading file "${params.Key}" to bucket "${params.Bucket}"...`);
+      await this.s3Client.send(new PutObjectCommand(params));
+      const successMessage = `File "${params.Key}" uploaded successfully to bucket "${params.Bucket}".`;
+      this.logger.log(successMessage);
+      
+      return new OperationResult(true, successMessage);  // Return success result
+    } catch (error: any) {
+      const errorMessage = `Error uploading file "${params.Key}" to MinIO: ${error.message}`;
+      this.logger.error(errorMessage, error.stack);
+      
+      return new OperationResult(false, errorMessage);  // Return failure result
     }
-
-    return true;
   }
 }

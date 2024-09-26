@@ -49,3 +49,7 @@ out/
 
 # Other
 *.swp
+
+# some more
+minio_data/
+package-lock.json

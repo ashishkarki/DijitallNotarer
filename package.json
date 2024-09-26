@@ -5,8 +5,9 @@
     "clean:all": "rimraf node_modules yarn.lock server/node_modules server/yarn.lock client/node_modules client/yarn.lock shared/node_modules shared/yarn.lock",
     "clean:install": "yarn clean:all && yarn install && yarn build:shared",
     "build:shared": "cd shared && yarn build",
+    "ts:fix": "yarn workspace server run ts-fix && yarn workspace client run ts-fix && yarn workspace shared run ts-fix",
     "server:dev": "yarn workspace server start:dev",
-    "docker:dev": "docker-compose -f docker-compose.yml up --build",
+    "docker:dev": "docker-compose -f compose.yml up --build",
     "docker:prod": "docker-compose -f docker-compose.prod.yml up --build"
   },
   "workspaces": [

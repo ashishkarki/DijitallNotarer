@@ -1,6 +1,7 @@
 import { Mutation, Resolver, Query, Args } from '@nestjs/graphql';
 import { NotarizationService } from './notarization.service';
 import { BadRequestException, Logger } from '@nestjs/common';
+import { OperationResult } from '../models/operation-result.dto';
 
 @Resolver()
 export class NotarizationResolver {
@@ -15,24 +16,9 @@ export class NotarizationResolver {
     return 'Hello, from the GraphQL Server of DijitallNotarer!!';
   }
 
-  @Mutation(() => Boolean)
-  async uploadDocument(@Args('filePath') filePath: string): Promise<boolean> {
-    try {
-      this.logger.log(`NotarizationResolver, received request to upload document at: ${filePath}`);
-
-      const result = await this.notarizationService.uploadDocument(filePath);
-
-      // Log the result of upload
-      if (result) {
-        this.logger.log(`Successfully uploaded document at: ${filePath}`);
-      } else {
-        this.logger.log(`Failed to upload file at: ${filePath}`);
-      }
-
-      return result;
-    } catch (error: any) {
-      this.logger.error(`Error during document upload: ${error.message}`, error.stack);
-      throw new BadRequestException(`Failed to upload document: ${error.message}`);
-    }
+  @Mutation(() => OperationResult)
+  async uploadDocument(@Args('filePath') filePath: string): Promise<OperationResult> {
+    this.logger.log(`NotarizationResolver, received request to upload document at: ${filePath}`);
+    return await this.notarizationService.uploadDocument(filePath);
   }
 }
