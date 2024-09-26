@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 RUN yarn global add @nestjs/cli
 
 # copy package.json, and yarn/package lock files to install dependencies
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 
 # Install dependencies with frozen lockfile to ensure consistency
 RUN yarn install --frozen-lockfile

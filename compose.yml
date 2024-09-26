@@ -1,17 +1,18 @@
 services:
-#  localstack:
-#    image: localstack/localstack
-#    container_name: localstack
-#    ports:
-#      - "4566:4566" # localstack AWS services port
-#      - "4571:4571" # optional: old lambda port
-#    environment:
-#      - SERVICES=s3,dynamodb,lambda # the services we need from localstack
-#      - DEBUG=1 # enable debug logs
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock  # <-- This mounts the Docker socket
-#    networks:
-#      - notary-network
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin987
+    volumes:
+      - ./minio-data:/data # mounts a local folder ./minio-data to MinIO's /data folder
+    ports:
+      - "9000:9000" # MinIO API (S3 compatible)
+      - "9001:9001" # MinIO web console
+    command: server /data --console-address ":9001" # ensures MinIO runs in the correct mode and serves the console on port 9001
+    networks:
+      - notary-network
 
   server:
     build:
@@ -22,8 +23,8 @@ services:
       # map the nestjs app running in SERVER_PORT number to host machine's
       # SERVER_PORT port as well. SERVER_PORT value is read from .env file by dc
       - "${SERVER_PORT}:${SERVER_PORT}"
-#    depends_on:
-#      - localstack
+    #    depends_on:
+    #      - localstack
     volumes:
       - ./server:/usr/src/app # mount the local server folder to the container
       - /usr/src/app/node_modules # prevent overwriting node_mods inside the container
