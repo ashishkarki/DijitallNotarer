@@ -1,0 +1,46 @@
+# Ignore node_modules since we'll install dependencies inside Docker
+node_modules
+
+# Ignore lock files (optional, can keep if you want lockfile consistency)
+yarn.lock
+package-lock.json
+
+# Ignore compiled NestJS files (typically built in dist/ folder)
+dist/
+
+# Ignore temporary files and directories
+tmp/
+temp/
+
+# Ignore test coverage output
+coverage/
+
+# Ignore logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore environment variables (sensitive information)
+.env
+.env.*
+!.env.example  # Keep .env.example as a reference
+
+# Ignore Docker-related files
+.dockerignore
+Dockerfile*
+docker-compose*
+
+# Ignore Git version control files
+.git/
+.gitignore
+
+# Ignore editor-specific files (for common editors/IDEs)
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Ignore OS-related files
+Thumbs.db
