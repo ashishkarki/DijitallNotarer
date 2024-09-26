@@ -53,3 +53,4 @@ out/
 # some more
 minio_data/
 package-lock.json
+/minio-data/
