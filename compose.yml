@@ -17,7 +17,7 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: server/Dockerfile.dev
+      dockerfile: Dockerfile.dev
     container_name: server
     ports:
       # map the nestjs app running in SERVER_PORT number to host machine's
@@ -34,6 +34,7 @@ services:
       - AWS_ENDPOINT=http://minio:9000 # Point to MinIO within the Docker network
       - MINIO_ACCESS_KEY=minioadmin     # MinIO credentials
       - MINIO_SECRET_KEY=minioadmin987     # MinIO credentials
+      - DATABASE_URL=${DATABASE_URL}   # Add the Neon DATABASE_URL from the .env
     depends_on:
       - minio # this ensures minIO starts before this server service
     networks:

@@ -8,13 +8,16 @@ WORKDIR /usr/src/app
 RUN yarn global add @nestjs/cli
 
 # copy package.json, and yarn/package lock files to install dependencies
-COPY package*.json yarn.lock ./
+COPY package*.json ./
 
 # Install dependencies with frozen lockfile to ensure consistency
 RUN yarn install --frozen-lockfile
 
 # Copy the entire server folder into the container
 COPY . .
+
+# Add this line to generate Prisma client inside the container
+RUN npx prisma generate
 
 # expose the application port
 # default port which can be overwritten by compose

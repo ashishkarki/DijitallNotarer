@@ -13,4 +13,14 @@ type Query {
 
 type Mutation {
   uploadDocument(filePath: String!): OperationResult!
+  register(registerUserDto: RegisterUserDto!): OperationResult!
+}
+
+input RegisterUserDto {
+  name: String!
+  email: String!
+  dob: String!
+  citizenship: String!
+  passportNumber: String!
+  password: String!
 }
