@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { OperationResult } from '../models/operation-result.dto';
+import { OtpService } from '../otp/otp.service';
 
 // Define the User type based on PrismaService
 // @ts-ignore
@@ -10,7 +11,10 @@ type User = PrismaService['user']['create']['data'];
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private otpService: OtpService,
+  ) {}
 
   async registerUser(
     registerUserDto: RegisterUserDto,
@@ -40,9 +44,35 @@ export class UserService {
       },
     });
 
+    // After user creation, generate OTP and send it via email
+    const otpResult = await this.otpService.generateOtp(email);
+    if (!otpResult.status) {
+      return new OperationResult(
+        true,
+        `New User created with email ${email}, but failed to generate OTP: ${otpResult.message}`,
+      );
+    }
+
+    const sendOtpResult = await this.otpService.sendOtpEmail(
+      email,
+      otpResult.otp!,
+    );
+    if (!sendOtpResult.status) {
+      return new OperationResult(
+        true,
+        `New User created with email ${email}, but failed to send OTP: ${otpResult.message}`,
+      );
+    }
+
     return new OperationResult(
       true,
-      `New User successfully created: ${JSON.stringify(user)}`,
+      `New User successfully created and OTP sent: ${JSON.stringify(user)}`,
     );
+  }
+
+  // Method to verify OTP provided by the user
+  async verifyUserOtp(email: string, otp: string): Promise<OperationResult> {
+    // delegate this to OtpService
+    return this.otpService.verifyOtp(email, otp);
   }
 }
