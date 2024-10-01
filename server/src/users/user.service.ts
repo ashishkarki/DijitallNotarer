@@ -24,55 +24,63 @@ export class UserService {
       registerUserDto;
 
     // Check if the email is already used, since it's supposed to be unique
-    const existingUser: User | null = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    try {
+      const existingUser: User | null = await this.prisma.user.findUnique({
+        where: { email },
+      });
 
-    if (existingUser) {
-      return new OperationResult(false, 'Error: email already in use!!');
-    }
+      if (existingUser) {
+        return new OperationResult(false, 'Error: email already in use!!');
+      }
 
-    // else register this new user & hash the pw before storing into DB
-    const saltRounds = 10; // for bcrypt
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+      // else register this new user & hash the pw before storing into DB
+      const saltRounds = 10; // for bcrypt
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // TODO: Create a new user in the database without any validation or password hashing for now
-    const user: User = await this.prisma.user.create({
-      data: {
-        id: uuidv4(),
-        name,
+      // TODO: Create a new user in the database without any validation or password hashing for now
+      const user: User = await this.prisma.user.create({
+        data: {
+          id: uuidv4(),
+          name,
+          email,
+          password: hashedPassword, // TODO: raw password for now
+          citizenship,
+          passportNumber,
+          dob: new Date(dob),
+        },
+      });
+
+      // After user creation, generate OTP and send it via email
+      const otpResult = await this.otpService.generateOtp(email);
+      if (!otpResult.status) {
+        return new OperationResult(
+          true,
+          `New User created with email ${email}, but failed to generate OTP: ${otpResult.message}`,
+        );
+      }
+
+      const sendOtpResult = await this.otpService.sendOtpEmail(
         email,
-        password: hashedPassword, // TODO: raw password for now
-        citizenship,
-        passportNumber,
-        dob: new Date(dob),
-      },
-    });
+        otpResult.otp!,
+      );
+      if (!sendOtpResult.status) {
+        return new OperationResult(
+          true,
+          `New User created with email ${email}, but failed to send OTP: ${otpResult.message}`,
+        );
+      }
 
-    // After user creation, generate OTP and send it via email
-    const otpResult = await this.otpService.generateOtp(email);
-    if (!otpResult.status) {
       return new OperationResult(
         true,
-        `New User created with email ${email}, but failed to generate OTP: ${otpResult.message}`,
+        `New User successfully created and OTP sent: ${JSON.stringify(user)}`,
       );
-    }
-
-    const sendOtpResult = await this.otpService.sendOtpEmail(
-      email,
-      otpResult.otp!,
-    );
-    if (!sendOtpResult.status) {
+    } catch (error: any) {
+      console.error(`Error in UserService.registerUser: ${error}`);
       return new OperationResult(
-        true,
-        `New User created with email ${email}, but failed to send OTP: ${otpResult.message}`,
+        false,
+        `Failed to register user: ${error.message}`,
       );
     }
-
-    return new OperationResult(
-      true,
-      `New User successfully created and OTP sent: ${JSON.stringify(user)}`,
-    );
   }
 
   // Method to verify OTP provided by the user
