@@ -4,6 +4,7 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { OperationResult } from '../models/operation-result.dto';
 import { OtpService } from '../otp/otp.service';
+import * as bcrypt from 'bcrypt';
 
 // Define the User type based on PrismaService
 // @ts-ignore
@@ -31,13 +32,17 @@ export class UserService {
       return new OperationResult(false, 'Error: email already in use!!');
     }
 
+    // else register this new user & hash the pw before storing into DB
+    const saltRounds = 10; // for bcrypt
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     // TODO: Create a new user in the database without any validation or password hashing for now
     const user: User = await this.prisma.user.create({
       data: {
         id: uuidv4(),
         name,
         email,
-        password, // TODO: raw password for now
+        password: hashedPassword, // TODO: raw password for now
         citizenship,
         passportNumber,
         dob: new Date(dob),
