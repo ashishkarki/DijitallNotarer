@@ -1,8 +1,12 @@
-import React from "react";
-import { Box, Button, Heading, VStack } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Box, Button, Heading, Spinner, VStack } from "@chakra-ui/react";
 import { Control, FieldErrors } from "react-hook-form";
 import { FormFieldNames } from "@/types/FormFieldNames";
-import FormFieldBuilder from "@/components/forms/FormFieldBuilder"; // Import FormFieldNames
+import FormFieldBuilder from "@/components/forms/FormFieldBuilder";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { startLoading, stopLoading } from "@/store/uiSlice";
+import log from "loglevel";
 
 interface RegisterFormProps {
   control: Control<any>;
@@ -17,6 +21,31 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   clearErrors,
   handleSubmit,
 }) => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state: RootState) => state.ui.isLoading);
+
+  useEffect(() => {
+    console.log(`RegisterForm, isLoading: ${isLoading}`);
+  }, [isLoading]);
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    dispatch(startLoading());
+
+    try {
+      // handleSubmit(event);
+      // Simulating an async operation with a delay
+      setTimeout(() => {
+        handleSubmit(event);
+        dispatch(stopLoading());
+      }, 2000); // 2-second delay to see the spinner
+    } catch (e: any) {
+      log.error(`Error during Register Form submission, ${e.message}`);
+    } finally {
+      dispatch(stopLoading());
+    }
+  };
+
   return (
     <Box
       as="form"
@@ -24,7 +53,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       p={8}
       rounded="lg"
       shadow="md"
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
     >
       <Heading as="h1" size="lg" mb={6} textAlign="center" color="brand.500">
         Register
@@ -87,7 +116,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       </VStack>
 
       <Button type="submit" colorScheme="brand" size="lg" width="full" mt={6}>
-        Register
+        {isLoading ? <Spinner /> : "Register"}
       </Button>
     </Box>
   );
