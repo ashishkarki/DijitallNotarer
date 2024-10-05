@@ -39,8 +39,8 @@ export default function Home() {
             <li>
               Get started by editing <code>src/pages/index.tsx</code>.
             </li>
-            <li>Save and see your changes instantly.</li>
-            I did change a few things and it works...
+            <li>Save and see your changes instantly.</li>I did change a few
+            things and it works...
           </ol>
 
           <div className={styles.ctas}>
