@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import log from "loglevel";
 import FormFieldBuilder from "@/components/forms/FormFieldBuilder";
-import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -29,7 +28,7 @@ const Register = () => {
 
   const onSubmit = (data: any) => {
     if (data.password !== data.confirmPassword) {
-      log.warn(`Passwords don't match!!!`);
+      log.warn("Passwords don't match!!!");
       return;
     }
 
@@ -38,14 +37,13 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      {/* Wrap Form in an HTML <form> to handle submission */}
       <form
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg"
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="text-2xl font-bold mb-6">Registration Page</h1>
 
-        {/* Reuse FormFieldBuilder for all form fields */}
+        {/* Reuse the cleaned-up FormFieldBuilder */}
         <FormFieldBuilder
           name="name"
           label="Name"
@@ -94,9 +92,12 @@ const Register = () => {
         />
 
         {/*  Submit Button */}
-        <Button type={"submit"} className="w-full mt-4">
+        <button
+          type="submit"
+          className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+        >
           Register
-        </Button>
+        </button>
       </form>
     </div>
   );
