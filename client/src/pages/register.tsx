@@ -85,8 +85,8 @@ const Register = () => {
         maxW="lg"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Heading as="h1" size="lg" mb={6}>
-          Registration Page
+        <Heading as="h1" size="lg" mb={6} textAlign={"center"} color="gray.900">
+          Register and start uploading documents
         </Heading>
 
         {/* Use a VStack for consistent spacing between fields */}
