@@ -6,16 +6,7 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-
-// Define the form field names type in this file
-type FormFieldNames =
-  | "name"
-  | "email"
-  | "password"
-  | "confirmPassword"
-  | "dob"
-  | "citizenship"
-  | "passportNumber";
+import { FormFieldNames } from "@/types/FormFieldNames";
 
 interface FormFieldBuilderProps {
   name: FormFieldNames;
@@ -36,7 +27,9 @@ const FormFieldBuilder: React.FC<FormFieldBuilderProps> = ({
 }) => {
   return (
     <FormControl isInvalid={!!errors[name]} mb="4">
-      <FormLabel color="gray.700">{label}</FormLabel> {/* Set label color */}
+      {" "}
+      {/* Chakra's spacing scale (16px) */}
+      <FormLabel color="brand.500">{label}</FormLabel> {/* Set label color */}
       <Controller
         name={name}
         control={control}
@@ -47,14 +40,14 @@ const FormFieldBuilder: React.FC<FormFieldBuilderProps> = ({
             onBlur={() => clearError(name)} // Clear error on blur
             backgroundColor="white"
             borderColor="gray.300"
-            focusBorderColor="blue.500"
+            focusBorderColor="brand.500"
             _hover={{ borderColor: "gray.400" }}
             color="gray.800"
           />
         )}
       />
       {errors[name] && (
-        <FormErrorMessage>
+        <FormErrorMessage color="danger.500">
           {(errors[name] as FieldError)?.message ?? "Unknown error"}
         </FormErrorMessage>
       )}
