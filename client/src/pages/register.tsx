@@ -3,30 +3,62 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import log from "loglevel";
+import { Box, Button, Heading, VStack } from "@chakra-ui/react";
 import FormFieldBuilder from "@/components/forms/FormFieldBuilder";
 
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  confirmPassword: z
-    .string()
-    .min(8, "Confirm Password must be at least 8 characters"),
-  dob: z.string().min(1, "Date of Birth is required"),
-  citizenship: z.string().min(1, "Citizenship is required"),
-  passportNumber: z.string().min(1, "Passport Number is required"),
-});
+// Define the password validation regex
+const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])/; // At least one uppercase and one special character
+
+const formSchema = z
+  .object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        passwordRegex,
+        "Password must contain at least one uppercase letter and one special character",
+      ),
+    confirmPassword: z
+      .string()
+      .min(8, "Confirm Password must be at least 8 characters")
+      .regex(
+        passwordRegex,
+        "Password must contain at least one uppercase letter and one special character",
+      ),
+    dob: z.string().min(1, "Date of Birth is required"),
+    citizenship: z.string().min(1, "Citizenship is required"),
+    passportNumber: z.string().min(1, "Passport Number is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: `Passwords don't match`,
+    path: ["confirmPassword"], // where will the mismatch error be shown
+  });
+
+// Define the form types based on the schema
+type FormSchemaType = z.infer<typeof formSchema>;
 
 const Register = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+    clearErrors,
+  } = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      dob: "",
+      citizenship: "",
+      passportNumber: "",
+    },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FormSchemaType) => {
     if (data.password !== data.confirmPassword) {
       log.warn("Passwords don't match!!!");
       return;
@@ -36,70 +68,90 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form
-        className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg"
+    <Box
+      minH="100vh"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      bg="gray.800"
+    >
+      <Box
+        as="form"
+        bg="white"
+        p={8}
+        rounded="lg"
+        shadow="md"
+        w="full"
+        maxW="lg"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h1 className="text-2xl font-bold mb-6">Registration Page</h1>
+        <Heading as="h1" size="lg" mb={6}>
+          Registration Page
+        </Heading>
 
-        {/* Reuse the cleaned-up FormFieldBuilder */}
-        <FormFieldBuilder
-          name="name"
-          label="Name"
-          control={control}
-          errors={errors}
-        />
-        <FormFieldBuilder
-          name="email"
-          label="Email"
-          type="email"
-          control={control}
-          errors={errors}
-        />
-        <FormFieldBuilder
-          name="password"
-          label="Password"
-          type="password"
-          control={control}
-          errors={errors}
-        />
-        <FormFieldBuilder
-          name="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          control={control}
-          errors={errors}
-        />
-        <FormFieldBuilder
-          name="dob"
-          label="Date of Birth"
-          type="date"
-          control={control}
-          errors={errors}
-        />
-        <FormFieldBuilder
-          name="citizenship"
-          label="Citizenship"
-          control={control}
-          errors={errors}
-        />
-        <FormFieldBuilder
-          name="passportNumber"
-          label="Passport Number"
-          control={control}
-          errors={errors}
-        />
+        {/* Use a VStack for consistent spacing between fields */}
+        <VStack spacing={4} align="stretch">
+          <FormFieldBuilder
+            name="name"
+            label="Name"
+            control={control}
+            errors={errors}
+            clearError={clearErrors}
+          />
+          <FormFieldBuilder
+            name="email"
+            label="Email"
+            type="email"
+            control={control}
+            errors={errors}
+            clearError={clearErrors}
+          />
+          <FormFieldBuilder
+            name="password"
+            label="Password"
+            type="password"
+            control={control}
+            errors={errors}
+            clearError={clearErrors}
+          />
+          <FormFieldBuilder
+            name="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            control={control}
+            errors={errors}
+            clearError={clearErrors}
+          />
+          <FormFieldBuilder
+            name="dob"
+            label="Date of Birth"
+            type="date"
+            control={control}
+            errors={errors}
+            clearError={clearErrors}
+          />
+          <FormFieldBuilder
+            name="citizenship"
+            label="Citizenship"
+            control={control}
+            errors={errors}
+            clearError={clearErrors}
+          />
+          <FormFieldBuilder
+            name="passportNumber"
+            label="Passport Number"
+            control={control}
+            errors={errors}
+            clearError={clearErrors}
+          />
+        </VStack>
 
-        {/*  Submit Button */}
-        <button
-          type="submit"
-          className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-        >
+        {/* Chakra UI Button */}
+        <Button type="submit" colorScheme="blue" size="lg" width="full" mt={6}>
           Register
-        </button>
-      </form>
-    </div>
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

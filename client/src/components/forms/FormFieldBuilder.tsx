@@ -1,12 +1,29 @@
 import { Control, Controller, FieldError, FieldErrors } from "react-hook-form";
 import React from "react";
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
+
+// Define the form field names type in this file
+type FormFieldNames =
+  | "name"
+  | "email"
+  | "password"
+  | "confirmPassword"
+  | "dob"
+  | "citizenship"
+  | "passportNumber";
 
 interface FormFieldBuilderProps {
-  name: string;
+  name: FormFieldNames;
   label: string;
   type?: string;
   control: Control<any>;
   errors: FieldErrors;
+  clearError: (name: FormFieldNames) => void;
 }
 
 const FormFieldBuilder: React.FC<FormFieldBuilderProps> = ({
@@ -15,27 +32,33 @@ const FormFieldBuilder: React.FC<FormFieldBuilderProps> = ({
   type = "text",
   control,
   errors,
+  clearError,
 }) => {
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+    <FormControl isInvalid={!!errors[name]} mb="4">
+      <FormLabel color="gray.700">{label}</FormLabel> {/* Set label color */}
       <Controller
         name={name}
         control={control}
         render={({ field }) => (
-          <input
+          <Input
             type={type}
             {...field}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            onBlur={() => clearError(name)} // Clear error on blur
+            backgroundColor="white"
+            borderColor="gray.300"
+            focusBorderColor="blue.500"
+            _hover={{ borderColor: "gray.400" }}
+            color="gray.800"
           />
         )}
       />
       {errors[name] && (
-        <p className="text-red-600 text-sm">
+        <FormErrorMessage>
           {(errors[name] as FieldError)?.message ?? "Unknown error"}
-        </p>
+        </FormErrorMessage>
       )}
-    </div>
+    </FormControl>
   );
 };
 
