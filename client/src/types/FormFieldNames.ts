@@ -4,5 +4,5 @@ export type FormFieldNames =
   | "password"
   | "confirmPassword"
   | "dob"
-  | "citizenship"
+  | "citizenshipNumber"
   | "passportNumber";

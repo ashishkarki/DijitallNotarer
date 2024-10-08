@@ -4,7 +4,7 @@ import { Control, FieldErrors } from "react-hook-form";
 import { FormFieldNames } from "@/types/FormFieldNames";
 import FormFieldBuilder from "@/components/forms/FormFieldBuilder";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { AppDispatch, RootState } from "@/store";
 import { startLoading, stopLoading } from "@/store/uiSlice";
 import log from "loglevel";
 
@@ -21,24 +21,25 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   clearErrors,
   handleSubmit,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const isLoading = useSelector((state: RootState) => state.ui.isLoading);
 
+  // TODO: Debugging only, remove later
   useEffect(() => {
     console.log(`RegisterForm, isLoading: ${isLoading}`);
   }, [isLoading]);
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(startLoading());
 
     try {
       // handleSubmit(event);
       // Simulating an async operation with a delay
-      setTimeout(() => {
-        handleSubmit(event);
-        dispatch(stopLoading());
-      }, 2000); // 2-second delay to see the spinner
+      // setTimeout(() => {
+      await handleSubmit(event);
+      // dispatch(stopLoading());
+      // }, 2000); // 2-second delay to see the spinner
     } catch (e: any) {
       log.error(`Error during Register Form submission, ${e.message}`);
     } finally {
@@ -100,8 +101,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           clearError={clearErrors}
         />
         <FormFieldBuilder
-          name="citizenship"
-          label="Citizenship"
+          name="citizenshipNumber"
+          label="Citizenship Number"
           control={control}
           errors={errors}
           clearError={clearErrors}

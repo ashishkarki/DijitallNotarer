@@ -27,7 +27,7 @@ const formSchema = z.object({
       "Password must contain at least one uppercase letter and one special character",
     ),
   dob: z.string().min(1, "Date of Birth is required"),
-  citizenship: z.string().min(1, "Citizenship is required"),
+  citizenshipNumber: z.string().min(1, "Citizenship Number is required"),
   passportNumber: z.string().min(1, "Passport Number is required"),
 });
 
@@ -47,7 +47,7 @@ const RegisterUser = () => {
       password: "",
       confirmPassword: "",
       dob: "",
-      citizenship: "",
+      citizenshipNumber: "",
       passportNumber: "",
     },
   });
